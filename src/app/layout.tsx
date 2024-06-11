@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Karla } from "next/font/google";
 import "./globals.css";
 
+import Image from "next/image";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import SearchBox from "@/components/SearchBox";
 
 // const inter = Karla({ subsets: ["latin"] });
 
@@ -32,8 +34,19 @@ export default function RootLayout({
         <div
           className="flex flex-col h-screen justify-between"
           style={fh}>
-          <Header />
-          <div className="mb-auto">{children}</div>
+          <div>
+            <Header />
+            <div className="mb-auto">
+              <div className="w-96 sm:w-3/4 md:w-4/5 lg:w-4/6 xl:w-1/3 box-border m-auto px-7 py-5">
+                <p className="text-neutral-100 text-base font-medium md:text-lg lg:text-center">
+                  Paste your review’s link and click submit to get a pretty little image
+                  of your review.
+                </p>
+                <SearchBox />
+                {children}
+              </div>
+            </div>
+          </div>
           <Footer />
         </div>
       </body>

@@ -1,3 +1,4 @@
+"use client";
 import ApiData from "@/utils/ApiData";
 import FormData from "@/utils/FormData";
 
@@ -15,14 +16,14 @@ interface SearchBoxProps {
   apiData?: ApiData | null;
   setApiData?: Dispatch<SetStateAction<ApiData | null>>;
   setIsVisible?: Dispatch<SetStateAction<boolean>>;
-  isFetching: boolean;
+  isFetching?: boolean;
   BASE_URL?: string;
   IMAGE_URL?: string;
   myRef?: React.MutableRefObject<HTMLElement | null>;
   setQueryURL?: Dispatch<SetStateAction<string>>;
 }
 
-export default function SearchBox({ isFetching }: SearchBoxProps) {
+export default function SearchBox() {
   const router = useRouter();
 
   const [formData, setFormData] = useState<FormData>({
@@ -40,7 +41,7 @@ export default function SearchBox({ isFetching }: SearchBoxProps) {
       // reject
       return;
     }
-    router.push(`/?url=${url}&img=1`);
+    router.push(`/review/?url=${url}&img=1`);
     // setSubmitted(true);
 
     // console.log(BASE_URL + url);
@@ -87,8 +88,7 @@ export default function SearchBox({ isFetching }: SearchBoxProps) {
             formData.blink === "" ? "hidden" : ""
           }`}
         type="button"
-        onClick={handleClear}
-        disabled={isFetching}>
+        onClick={handleClear}>
         <img
           src="/xmark-solid.svg"
           alt="clear"
@@ -99,8 +99,7 @@ export default function SearchBox({ isFetching }: SearchBoxProps) {
         className="bg-blue-400 text-neutral-900 font-bold px-5
         py-3 rounded-full text-base md:text-lg  right-3 md:right-5
         relative disabled:bg-neutral-600 disabled:text-neutral-100"
-        type="submit"
-        disabled={isFetching}>
+        type="submit">
         Submit!
       </button>
     </form>
