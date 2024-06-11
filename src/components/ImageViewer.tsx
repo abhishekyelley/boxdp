@@ -1,139 +1,49 @@
+"use client";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 import ApiData from "@/utils/ApiData";
+import ApiDataError from "@/utils/ApiDataError";
+
 import {
-  RefObject,
-  ReactInstance,
   useState,
   Dispatch,
   SetStateAction,
-  useEffect,
   useRef,
 } from "react";
-import ApiDataError from "@/utils/ApiDataError";
-import LoadingImageViewer from "./LoadingImageViewer";
-import ErrorImageViewer from "./ErrorImageViewer";
+
 import DefaultReviewStyle from "./DefaultReviewStyle";
 import Link from "next/link";
 
 interface ImageViewerProps {
+  apiData: ApiData;
   queryURL?: string | null;
   myRef?: React.MutableRefObject<HTMLCanvasElement | null>;
   BASE_URL?: string;
   IMAGE_URL?: string;
   isFetching?: boolean;
-  setIsFetching: Dispatch<SetStateAction<boolean>>;
+  setIsFetching?: Dispatch<SetStateAction<boolean>>;
 }
 
-const BASE_URL = "/api/review?url=";
-
 // -------- FUNCTION ---------
-export default function ImageViewer({
-  isFetching,
-  setIsFetching,
-}: ImageViewerProps) {
-  const [apiData, setApiData] = useState<ApiData | ApiDataError | null>(null);
+export default function ImageViewer({ apiData, queryURL }: ImageViewerProps) {
   const myRef = useRef<HTMLCanvasElement | null>(null);
 
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const queryURL = searchParams.get("url");
+  const router = useRouter();
 
+  const parsedImgNum = parseInt(searchParams.get("img") as string);
+
+  const [curImgNum, setCurImgNum] = useState<number>(
+    !Number.isNaN(parsedImgNum)
+      ? apiData?.images.length
+        ? Math.max(1, Math.min(parsedImgNum, apiData.images.length))
+        : 1
+      : 1
+  );
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [accordionToggle, setAccordionToggle] = useState<boolean>(false);
 
-  function fetcher(url: string) {
-    return new Promise<ApiData | ApiDataError>((resolve, reject) => {
-      setIsFetching(true);
-      fetch(url, { method: "GET" })
-        .then((response) => {
-          return response.json();
-        })
-        .then((res: ApiData | ApiDataError) => {
-          if ("error" in res) {
-            throw res;
-          }
-          setIsFetching(false);
-          resolve(res as ApiData);
-        })
-        .catch((error: ApiDataError) => {
-          console.error(error);
-          setIsFetching(false);
-          reject(error as ApiDataError);
-        });
-    });
-  }
-
-  useEffect(() => {
-    if (queryURL === null) {
-      return () => {
-        console.log("none happened");
-      };
-    }
-    setApiData(null);
-    fetcher(BASE_URL + queryURL)
-      .then((res) => {
-        setApiData(res);
-        console.log("fetch success");
-      })
-      .catch((err) => {
-        setApiData(err);
-        console.error("fetchfail:", err);
-      });
-
-    return () => {
-      console.log("cleanup");
-    };
-  }, [queryURL]);
-
-  if (isFetching) {
-    return <LoadingImageViewer />;
-  }
-  if (apiData === null) {
-    return (
-      <div className="flex flex-col justify-center w-auto">
-        <h3 className="text-2xl md:text-4xl font-bold text-center mb-5">
-          Hello!
-        </h3>
-        <img
-          src="/preview.png"
-          className="rounded-xl"></img>
-      </div>
-    );
-  }
-  if ("error" in apiData) {
-    return <ErrorImageViewer />;
-  }
-
-  const parsedImgNum = parseInt(searchParams.get("img") as string);
-  let curImgNum = !Number.isNaN(parsedImgNum)
-    ? apiData?.images.length
-      ? Math.max(1, Math.min(parsedImgNum, apiData.images.length))
-      : 1
-    : 1; // please make this nicer
-
-  // if (!searchParams.get('url'))
-  //     return (<h1>Boo Hoo!</h1>);
-
-  const handleImgNumDecr = () => {
-    router.push(`/?url=${queryURL}&img=${Math.max(curImgNum - 1, 1)}`, {
-      scroll: false,
-    });
-  };
-  const handleImgNumIncr = () => {
-    router.push(
-      `/?url=${queryURL}&img=${Math.min(
-        curImgNum + 1,
-        apiData?.images.length || 1
-      )}`,
-      { scroll: false }
-    );
-  };
-
-  // --------- LOADING UI -----------
-
-  // TODO: Set this style in handleSubmit inside fetcher
   return (
     <div className="flex flex-col items-center">
       <h3 className="text-2xl md:text-4xl font-bold text-center mb-5">
@@ -152,38 +62,32 @@ export default function ImageViewer({
           Pick an Image
         </p>
         <div className="flex flex-row gap-6 justify-center items-center mt-2">
-          <Link
+          <button
             className={`px-8 py-2 rounded-full bg-blue-400 select-none
             ${curImgNum === 1 ? "pointer-events-none bg-neutral-600" : ""}`}
-            href={`/?url=${queryURL}&img=${Math.max(curImgNum - 1, 1)}`}
-            scroll={false}
-            aria-disabled={curImgNum === 1}
-            prefetch>
+            onClick={() => setCurImgNum(prevNum => Math.max(prevNum - 1, 1))}
+            disabled={curImgNum === 1}
+          >
             <img
               alt="prev"
               src="/chevron-right-solid.svg"
               className="w-4 rotate-180"></img>
-          </Link>
+          </button>
           <p className="text-center self-center border-2 px-3 py-3 border-blue-400 text-neutral-300 rounded-xl text-xl font-bold md:text-2xl select-none">
             {curImgNum} / {apiData.images.length}
           </p>
-          <Link
-            className={`px-8 py-2 rounded-full bg-blue-400 select-none ${
-              curImgNum === apiData.images.length
-                ? "pointer-events-none bg-neutral-600"
-                : ""
-            }`}
-            href={`/?url=${queryURL}&img=${Math.min(
-              curImgNum + 1,
-              apiData.images.length || 1
-            )}`}
-            scroll={false}
-            prefetch>
+          <button
+            className={`px-8 py-2 rounded-full bg-blue-400 select-none ${curImgNum === apiData.images.length
+              ? "pointer-events-none bg-neutral-600"
+              : ""
+              }`}
+            onClick={() => setCurImgNum(prevNum => Math.min(prevNum + 1, apiData.images.length || 1))}
+          >
             <img
               alt="next"
               src="/chevron-right-solid.svg"
               className="w-4"></img>
-          </Link>
+          </button>
         </div>
       </div>
       <button
