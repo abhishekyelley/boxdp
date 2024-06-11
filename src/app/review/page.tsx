@@ -3,14 +3,15 @@ import ImageViewer from "@/components/ImageViewer";
 import ApiData from "@/utils/ApiData";
 import ApiDataError from "@/utils/ApiDataError";
 
-const BASE_URL = "http://localhost:3000/api/review?url=";
+import getReview from "@/utils/api/review/route";
 
 export const dynamic = 'force-dynamic';
 
+// TODO - response not needed, look in to utils/review/route
 function fetcher(url: string) {
     return new Promise<ApiData | ApiDataError>(async (resolve, reject) => {
         try{
-            const response = await fetch(url, { method: "GET" })
+            const response = await getReview(url)
             const res: ApiData | ApiDataError = await response.json();
             if ("error" in res) {
                 throw res;
@@ -33,7 +34,7 @@ export default async function Review({ searchParams }: { searchParams: { url: st
         );
     }
     try {
-        const res = await fetcher(BASE_URL + queryURL);
+        const res = await fetcher(queryURL);
         if ("error" in res) {
             throw res;
         }
