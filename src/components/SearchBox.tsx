@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 export default function SearchBox() {
   const [url, setUrl] = useState("");
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const navigate = useCallback((path: string) => {
     startTransition(() => {
       router.push(path);
     });
   }, [router]);
-  const [isPending, startTransition] = useTransition();
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     navigate(`/review?url=${url}&img=1`);
