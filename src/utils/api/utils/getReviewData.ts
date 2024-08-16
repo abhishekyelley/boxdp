@@ -40,12 +40,10 @@ async function getImages(url: string) {
     },
     url,
   });
-
   const $ = cheerio.load(res.data);
   const body = $("body");
   let content_type = body.attr("data-tmdb-type");
   let content_id = body.attr("data-tmdb-id");
-
   // if body tag doesn't have tmdb attributes
   if (!content_id || !content_type) {
     const tmdb_url = $('a[data-track-action="TMDb"]').attr("href");
@@ -70,12 +68,8 @@ async function getImages(url: string) {
 
   const tmdbData = await axios({
     method: "GET",
-    headers: {
-      accept: "application/json",
-    },
     url: `https://api.themoviedb.org/3/${content_type}/${content_id}/images?api_key=${API_KEY}`,
   });
-
   const IMAGES_BASE_URL = "https://image.tmdb.org/t/p/original";
   if (tmdbData.data.backdrops.length > 0) {
     tmdbData.data.backdrops.forEach((item: TmdbBackdrop) => {

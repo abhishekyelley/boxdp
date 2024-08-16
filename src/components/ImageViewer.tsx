@@ -1,19 +1,11 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
 
 import ApiData from "@/utils/ApiData";
-import ApiDataError from "@/utils/ApiDataError";
 
-import {
-  useState,
-  Dispatch,
-  SetStateAction,
-  useRef,
-} from "react";
+import { useState, Dispatch, SetStateAction, useRef } from "react";
 
 import DefaultReviewStyle from "./DefaultReviewStyle";
-import Link from "next/link";
 
 interface ImageViewerProps {
   apiData: ApiData;
@@ -26,11 +18,10 @@ interface ImageViewerProps {
 }
 
 // -------- FUNCTION ---------
-export default function ImageViewer({ apiData, queryURL }: ImageViewerProps) {
+export default function ImageViewer({ apiData }: ImageViewerProps) {
   const myRef = useRef<HTMLCanvasElement | null>(null);
 
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const parsedImgNum = parseInt(searchParams.get("img") as string);
 
@@ -58,35 +49,43 @@ export default function ImageViewer({ apiData, queryURL }: ImageViewerProps) {
       <div className="mt-5">
         <p
           className="text-lg text-center md:text-2xl font-medium text-neutral-200"
-          title={String(apiData?.images.length)}>
+          title={String(apiData?.images.length)}
+        >
           Pick an Image
         </p>
         <div className="flex flex-row gap-6 justify-center items-center mt-2">
           <button
             className={`px-8 py-2 rounded-full bg-blue-400 select-none
             ${curImgNum === 1 ? "pointer-events-none bg-neutral-600" : ""}`}
-            onClick={() => setCurImgNum(prevNum => Math.max(prevNum - 1, 1))}
+            onClick={() => setCurImgNum((prevNum) => Math.max(prevNum - 1, 1))}
             disabled={curImgNum === 1}
           >
             <img
               alt="prev"
               src="/chevron-right-solid.svg"
-              className="w-4 rotate-180"></img>
+              className="w-4 rotate-180"
+            ></img>
           </button>
           <p className="text-center self-center border-2 px-3 py-3 border-blue-400 text-neutral-300 rounded-xl text-xl font-bold md:text-2xl select-none">
             {curImgNum} / {apiData.images.length}
           </p>
           <button
-            className={`px-8 py-2 rounded-full bg-blue-400 select-none ${curImgNum === apiData.images.length
-              ? "pointer-events-none bg-neutral-600"
-              : ""
-              }`}
-            onClick={() => setCurImgNum(prevNum => Math.min(prevNum + 1, apiData.images.length || 1))}
+            className={`px-8 py-2 rounded-full bg-blue-400 select-none ${
+              curImgNum === apiData.images.length
+                ? "pointer-events-none bg-neutral-600"
+                : ""
+            }`}
+            onClick={() =>
+              setCurImgNum((prevNum) =>
+                Math.min(prevNum + 1, apiData.images.length || 1)
+              )
+            }
           >
             <img
               alt="next"
               src="/chevron-right-solid.svg"
-              className="w-4"></img>
+              className="w-4"
+            ></img>
           </button>
         </div>
       </div>
@@ -98,13 +97,15 @@ export default function ImageViewer({ apiData, queryURL }: ImageViewerProps) {
           link.download = `${apiData.filmName}-${apiData.reviewerId}.png`;
           link.href = myRef.current.toDataURL("image/png") as string; // Type assertion
           link.click();
-        }}>
+        }}
+      >
         Download!
       </button>
       <button
         className={`bg-neutral-900 w-full text-left py-4 px-6 mt-5 select-none
         cursor-pointer ${accordionToggle ? "rounded-3xl" : "rounded-full"}`}
-        onClick={(e) => setAccordionToggle(!accordionToggle)}>
+        onClick={(e) => setAccordionToggle(!accordionToggle)}
+      >
         <div className="flex justify-between items-center">
           <p className="text-base font-medium md:text-lg text-neutral-200">
             More options (Pick an Image, Change Image Position)
@@ -119,13 +120,12 @@ export default function ImageViewer({ apiData, queryURL }: ImageViewerProps) {
         <div
           className={`h-fit justify-between items-center mt-5 gap-5 flex-col sm:flex-row
           ${accordionToggle ? "flex" : "hidden"}
-          }`}>
+          }`}
+        >
           <p className="grow-0 shrink-0 text-neutral-200 text-base md:text-lg">
             Change Image Position
           </p>
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full">
+          <div onClick={(e) => e.stopPropagation()} className="w-full">
             <input
               type="range"
               min={-1}

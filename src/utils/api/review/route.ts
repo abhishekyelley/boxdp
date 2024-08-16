@@ -53,35 +53,35 @@ function validateUrl(url: string) {
 // TODO - Response object not needed, make it normal js obj.. look into app/review/page fetcher
 export default async function getReview(url: string) {
     if (!url) {
-        return Response.json(errorBuilder(
+        return errorBuilder(
             "Missing required query param: url",
             422,
-        ));
+        );
     }
     // actual business
     try {
         url = validateUrl(url);
         const res = await getReviewData(url);
-        return Response.json(res);
+        return res;
     } catch (err) {
         if (err instanceof UrlValidationError) {
-            return Response.json(errorBuilder(
+            return errorBuilder(
                 err.message,
                 err.status,
                 err.url
-            ));
+            );
         }
         if (err instanceof AxiosError) {
-            return Response.json(errorBuilder(
+            return errorBuilder(
                 err.message,
                 err.status,
                 url
-            ));
+            );
         }
         console.log(err);
-        return Response.json(errorBuilder(
+        return errorBuilder(
             (err instanceof Error ? err?.message : undefined) || `internal server error`,
             500,
-        ));
+        );
     }
 }
