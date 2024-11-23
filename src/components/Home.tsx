@@ -35,7 +35,10 @@ export default function Home() {
       <SearchBox isFetching={isFetching} />
       <div id="review">
         <Suspense>
-          <ImageViewer isFetching={isFetching} setIsFetching={setIsFetching} />
+          <ImageViewer
+            isFetching={isFetching}
+            setIsFetching={setIsFetching}
+          />
         </Suspense>
       </div>
     </div>
