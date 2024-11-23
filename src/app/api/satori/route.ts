@@ -1,5 +1,5 @@
 import NewTemplate from "@/components/NewTemplate";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import React from "react";
 import satori from "satori";
 import fs from "node:fs/promises";
@@ -35,8 +35,7 @@ async function getImageBrightness(imageUrl: string): Promise<number> {
   }
 }
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
+async function getPngBuffer(searchParams: URLSearchParams) {
   const brightness = await getImageBrightness(
     searchParams.get("img") as string
   );
@@ -50,9 +49,13 @@ export async function GET(request: NextRequest) {
     reviewContent: searchParams.get("content") as string,
     reviewRating: Number(searchParams.get("rating")) as number,
     userImage: searchParams.get("userImage") as string,
-    haveAvatar: searchParams.get("haveAvatar") === "true" ? true : false,
-    haveTitle: searchParams.get("haveTitle") === "true" ? true : false,
+    haveAvatar:
+      searchParams.get("haveAvatar") === "true" ? true : false,
+    haveTitle:
+      searchParams.get("haveTitle") === "true" ? true : false,
+    haveBg: searchParams.get("haveBg") === "true" ? true : false,
     brightness: brightness as number,
+    director: searchParams.get("director") as string,
   };
   const fontRegular = await fs.readFile(
     "./public/fonts/Karla-Regular.ttf"
@@ -86,11 +89,23 @@ export async function GET(request: NextRequest) {
     ],
   });
 
-  const pngBuffer = await sharp(Buffer.from(svg)).png().toBuffer();
+  return await sharp(Buffer.from(svg)).png().toBuffer();
+}
 
-  return new Response(pngBuffer, {
-    headers: {
-      "Content-Type": "image/png",
-    },
-  });
+export async function GET(request: NextRequest) {
+  try {
+    const pngBuffer = await getPngBuffer(
+      request.nextUrl.searchParams
+    );
+    return new NextResponse(pngBuffer, {
+      headers: {
+        "Content-Type": "image/png",
+      },
+    });
+  } catch (err) {
+    return NextResponse.json({
+      error: true,
+      message: (err as { message?: string }).message ?? undefined,
+    });
+  }
 }

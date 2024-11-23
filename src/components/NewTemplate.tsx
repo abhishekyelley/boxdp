@@ -12,7 +12,9 @@ export default function NewTemplate({
   userImage,
   haveAvatar,
   haveTitle,
+  haveBg,
   brightness,
+  director,
 }: TemplateProps) {
   const fullStars = Math.floor(reviewRating);
   const hasHalfStar = reviewRating % 1 !== 0;
@@ -35,13 +37,17 @@ export default function NewTemplate({
       />
     ),
   ];
+  const bgProps: {
+    backgroundImage?: `url(${string})`;
+    backgroundColor?: "transparent";
+  } = {};
+  haveBg ? (bgProps.backgroundImage = `url(${image})`) : null;
+  !haveBg ? (bgProps.backgroundColor = "transparent") : null;
   return (
     <div
       style={{
         height: "1080px",
         width: "1080px",
-        backgroundColor: "transparent",
-        // backgroundImage: `url(${image})`,
         backgroundSize: "1920px 1080px",
         // 0 to -840px. why? idk. mid point will be -420px
         backgroundPosition: "-420px 0px",
@@ -49,6 +55,7 @@ export default function NewTemplate({
         flexDirection: "column",
         justifyContent: "space-between",
         letterSpacing: "-2px",
+        ...bgProps,
       }}
     >
       <footer
@@ -74,7 +81,7 @@ export default function NewTemplate({
               fontWeight: "700",
             }}
           >
-            {filmName} ({filmYear}), dir. Greta Gerwig
+            {filmName} ({filmYear}), dir. {director}
           </span>
         )}
       </footer>
