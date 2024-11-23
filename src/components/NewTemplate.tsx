@@ -1,6 +1,7 @@
 import { TemplateProps } from "@/utils/TemplateProps";
 
 export default function NewTemplate({
+  image,
   imagePosition,
   filmName,
   filmYear,
@@ -9,7 +10,7 @@ export default function NewTemplate({
   reviewContent,
   reviewerId,
   userImage,
-  haveImage,
+  haveAvatar,
   haveTitle,
   brightness,
 }: TemplateProps) {
@@ -65,7 +66,7 @@ export default function NewTemplate({
           alt="logo"
           style={{ width: "60px", height: "60px" }}
         />
-        {haveTitle === "true" && (
+        {haveTitle && (
           <span
             style={{
               color: `${brightness > 50 ? "#ffffff" : "#d9d9d9"}`,
@@ -102,7 +103,7 @@ export default function NewTemplate({
               alignContent: "center",
             }}
           >
-            {haveImage === "true" && (
+            {haveAvatar && (
               <img
                 src={userImage}
                 style={{

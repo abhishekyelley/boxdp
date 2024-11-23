@@ -8,7 +8,7 @@ export interface TemplateProps {
   reviewRating: number;
   reviewContent: string;
   userImage: string;
-  haveImage: string;
-  haveTitle: string;
+  haveAvatar: boolean;
+  haveTitle: boolean;
   brightness: number;
 }

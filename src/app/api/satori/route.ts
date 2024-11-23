@@ -50,8 +50,8 @@ export async function GET(request: NextRequest) {
     reviewContent: searchParams.get("content") as string,
     reviewRating: Number(searchParams.get("rating")) as number,
     userImage: searchParams.get("userImage") as string,
-    haveImage: searchParams.get("haveImage") as string,
-    haveTitle: searchParams.get("haveTitle") as string,
+    haveAvatar: searchParams.get("haveAvatar") === "true" ? true : false,
+    haveTitle: searchParams.get("haveTitle") === "true" ? true : false,
     brightness: brightness as number,
   };
   const fontRegular = await fs.readFile(
