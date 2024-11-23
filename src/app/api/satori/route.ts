@@ -37,17 +37,17 @@ async function getImageBrightness(imageUrl: string): Promise<number> {
 
 async function getPngBuffer(searchParams: URLSearchParams) {
   const brightness = await getImageBrightness(
-    searchParams.get("img") as string
+    searchParams.get("image") as string
   );
   const props: TemplateProps = {
-    image: searchParams.get("img") as string,
-    imagePosition: searchParams.get("pos") as string,
-    filmName: searchParams.get("fname") as string,
-    filmYear: searchParams.get("fyear") as string,
-    reviewerName: searchParams.get("uname") as string,
-    reviewerId: searchParams.get("uid") as string,
-    reviewContent: searchParams.get("content") as string,
-    reviewRating: Number(searchParams.get("rating")) as number,
+    image: searchParams.get("image") as string,
+    imagePosition: searchParams.get("imagePosition") as string,
+    filmName: searchParams.get("filmName") as string,
+    filmYear: searchParams.get("filmYear") as string,
+    reviewerName: searchParams.get("reviewerName") as string,
+    reviewerId: searchParams.get("reviewerId") as string,
+    reviewContent: searchParams.get("reviewContent") as string,
+    reviewRating: Number(searchParams.get("reviewRating")) as number,
     userImage: searchParams.get("userImage") as string,
     haveAvatar:
       searchParams.get("haveAvatar") === "true" ? true : false,

@@ -1,4 +1,4 @@
-export interface TemplateProps {
+export interface SatoriParams {
   image: string;
   imagePosition?: string;
   filmName: string;
@@ -8,9 +8,12 @@ export interface TemplateProps {
   reviewRating: number;
   reviewContent: string;
   director: string;
-  userImage: string;
+  userImage?: string;
   haveAvatar: boolean;
   haveTitle: boolean;
   haveBg: boolean;
+}
+
+export interface TemplateProps extends SatoriParams {
   brightness: number;
 }
