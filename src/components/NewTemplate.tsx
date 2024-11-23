@@ -1,19 +1,6 @@
-export interface NewTemplateProps {
-  image: string;
-  imagePosition?: string;
-  filmName: string;
-  filmYear: string;
-  reviewerName: string;
-  reviewerId: string;
-  reviewRating: number;
-  reviewContent: string;
-  userImage: string;
-  haveImage: string;
-  haveTitle: string;
-  brightness: number;
-}
+import { TemplateProps } from "@/utils/TemplateProps";
+
 export default function NewTemplate({
-  image,
   imagePosition,
   filmName,
   filmYear,
@@ -25,7 +12,7 @@ export default function NewTemplate({
   haveImage,
   haveTitle,
   brightness,
-}: NewTemplateProps) {
+}: TemplateProps) {
   const fullStars = Math.floor(reviewRating);
   const hasHalfStar = reviewRating % 1 !== 0;
 
@@ -52,8 +39,8 @@ export default function NewTemplate({
       style={{
         height: "1080px",
         width: "1080px",
-        // backgroundColor: "transparent",
-        backgroundImage: `url(${image})`,
+        backgroundColor: "transparent",
+        // backgroundImage: `url(${image})`,
         backgroundSize: "1920px 1080px",
         // 0 to -840px. why? idk. mid point will be -420px
         backgroundPosition: "-420px 0px",
@@ -69,7 +56,8 @@ export default function NewTemplate({
           padding: "50px 50px",
           justifyContent: "space-between",
           alignItems: "center",
-          background: "linear-gradient(to bottom, #000000BF, transparent)",
+          background:
+            "linear-gradient(to bottom, #000000BF, transparent)",
         }}
       >
         <img
@@ -107,7 +95,13 @@ export default function NewTemplate({
             gap: "10px",
           }}
         >
-          <div style={{ display: "flex", gap: "15px", alignContent: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "15px",
+              alignContent: "center",
+            }}
+          >
             {haveImage === "true" && (
               <img
                 src={userImage}

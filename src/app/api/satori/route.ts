@@ -1,11 +1,11 @@
-// import TestComp, { TestCompProps } from "@/components/TestComp";
-import NewTemplate, { NewTemplateProps } from "@/components/NewTemplate";
+import NewTemplate from "@/components/NewTemplate";
 import { NextRequest } from "next/server";
 import React from "react";
 import satori from "satori";
 import fs from "node:fs/promises";
 import sharp from "sharp";
 import axios from "axios";
+import { TemplateProps } from "@/utils/TemplateProps";
 
 // Function to get image brightness
 async function getImageBrightness(imageUrl: string): Promise<number> {
@@ -25,7 +25,8 @@ async function getImageBrightness(imageUrl: string): Promise<number> {
       totalBrightness += data[i];
     }
 
-    const avgBrightness = totalBrightness / (info.width * info.height);
+    const avgBrightness =
+      totalBrightness / (info.width * info.height);
     const brightness = Math.round((avgBrightness / 255) * 100);
     return brightness;
   } catch (error) {
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
   const brightness = await getImageBrightness(
     searchParams.get("img") as string
   );
-  const props: NewTemplateProps = {
+  const props: TemplateProps = {
     image: searchParams.get("img") as string,
     imagePosition: searchParams.get("pos") as string,
     filmName: searchParams.get("fname") as string,
@@ -53,8 +54,12 @@ export async function GET(request: NextRequest) {
     haveTitle: searchParams.get("haveTitle") as string,
     brightness: brightness as number,
   };
-  const fontRegular = await fs.readFile("./public/fonts/Karla-Regular.ttf");
-  const fontMedium = await fs.readFile("./public/fonts/Karla-Medium.ttf");
+  const fontRegular = await fs.readFile(
+    "./public/fonts/Karla-Regular.ttf"
+  );
+  const fontMedium = await fs.readFile(
+    "./public/fonts/Karla-Medium.ttf"
+  );
   const fontBold = await fs.readFile("./public/fonts/Karla-Bold.ttf");
   const svg = await satori(React.createElement(NewTemplate, props), {
     width: 1080,
