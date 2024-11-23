@@ -7,7 +7,6 @@ import Header from "@/components/Header";
 // const inter = Karla({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('http://localhost:3000/'),
   title: "boxd-pics",
   description:
     "Get a prettier image of your letterboxd review. Just provide the URL.",
